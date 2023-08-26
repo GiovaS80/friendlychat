@@ -27,6 +27,12 @@ import {
 } from '@angular/fire/storage';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+} from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [
@@ -40,7 +46,10 @@ import { ChatPageComponent } from './pages/chat-page/chat-page.component';
     AppRoutingModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
+    SocialLoginModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
+    // provideAuth(() =>getAuth()),
     provideAuth(() => {
       const auth = getAuth();
       if (location.hostname === 'localhost') {
@@ -73,7 +82,20 @@ import { ChatPageComponent } from './pages/chat-page/chat-page.component';
       return storage;
     }),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider('Google-Client-ID-Goes-Here'),
+          },
+        ],
+      } as SocialAuthServiceConfig,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
