@@ -1,0 +1,43 @@
+<header>
+    <nav class="bg-navy-400 px-2 lg:px-4 py-2.5 h-18">
+        <div class="flex flex-wrap items-center justify-between max-w-screen">
+            <a href="/" class="flex items-center">
+                <img src="../../../assets/FriendlyChatLogo.png" alt="FriendlyChat" class="h-16 mr-3 sm:h-10 stop-image" />
+                <span class="self-center mr-3 text-2xl font-light text-white whitespace-nowrap">
+                    Friendly Chat
+                </span>
+            </a>
+            <div class="flex flex-wrap items-end auth" *ngIf="user$ | async as user">
+                <div class="flex flex-wrap justify-between text-white">
+                    <img class="w-10 h-10 rounded-full" [src]="user?.photoURL"
+                        [alt]="user?.displayName" />
+                    <span class="text-white text-xl whitespace-nowrap font-light px-4 lg:px-5 py-2 lg:py-2.5">
+                        {{user?.displayName}}
+                    </span>
+                    <div class="relative inline-block shadow-lg dropdown">
+                        <button class="inline-flex items-center px-4 py-2 font-semibold text-gray-700 rounded ">
+                            <img class="w-8 h-8 rounded-full" src="../../../assets/menu.svg" />
+                        </button>
+                        <ul class="absolute hidden w-48 pt-3 text-gray-700 dropdown-menu right-2">
+                            <li class="flex-row p-4 bg-white">
+                                <img class="w-10 h-10 rounded-full" [src]="user?.photoURL"
+                                    [alt]="user?.displayName" />
+                                <span
+                                    class="text-navy-200 text-md whitespace-nowrap px-4 lg:px-5 py-2 lg:py-2.5 mr-6">
+                                    {{user?.displayName}}
+                                </span>
+                            </li>
+                            <li class="">
+                                <a class="block px-4 py-3 font-semibold whitespace-no-wrap bg-white hover:bg-navy-20 text-navy-500"
+                                    href="/" (click)="this.chatService.logout()">
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+</header>
