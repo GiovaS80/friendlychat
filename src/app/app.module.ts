@@ -6,13 +6,25 @@ import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
-import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
-import { provideAuth,getAuth } from '@angular/fire/auth';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
-import { provideFunctions,getFunctions } from '@angular/fire/functions';
-import { provideMessaging,getMessaging } from '@angular/fire/messaging';
-import { provideStorage,getStorage } from '@angular/fire/storage';
+import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
+import {
+  provideFirestore,
+  getFirestore,
+  connectFirestoreEmulator,
+} from '@angular/fire/firestore';
+import {
+  provideFunctions,
+  getFunctions,
+  connectFunctionsEmulator,
+} from '@angular/fire/functions';
+import { provideMessaging, getMessaging } from '@angular/fire/messaging';
+import {
+  provideStorage,
+  getStorage,
+  connectStorageEmulator,
+} from '@angular/fire/storage';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 
@@ -21,7 +33,7 @@ import { ChatPageComponent } from './pages/chat-page/chat-page.component';
     AppComponent,
     HeaderComponent,
     LoginPageComponent,
-    ChatPageComponent
+    ChatPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,13 +41,39 @@ import { ChatPageComponent } from './pages/chat-page/chat-page.component';
     CommonModule,
     FormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideFunctions(() => getFunctions()),
+    provideAuth(() => {
+      const auth = getAuth();
+      if (location.hostname === 'localhost') {
+        connectAuthEmulator(auth, 'http://127.0.0.1:9099', {
+          disableWarnings: true,
+        });
+      }
+      return auth;
+    }),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      if (location.hostname === 'localhost') {
+        connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
+      }
+      return firestore;
+    }),
+    provideFunctions(() => {
+      const functions = getFunctions();
+      if (location.hostname === 'localhost') {
+        connectFunctionsEmulator(functions, '127.0.0.1', 5001);
+      }
+      return functions;
+    }),
     provideMessaging(() => getMessaging()),
-    provideStorage(() => getStorage())
+    provideStorage(() => {
+      const storage = getStorage();
+      if (location.hostname === 'localhost') {
+        connectStorageEmulator(storage, '127.0.0.1', 5001);
+      }
+      return storage;
+    }),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
